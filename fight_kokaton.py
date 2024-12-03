@@ -23,9 +23,6 @@ def check_bound(obj_rct: pg.Rect) -> tuple[bool, bool]:
     if obj_rct.top < 0 or HEIGHT < obj_rct.bottom:
         tate = False
     return yoko, tate
-
-
-
 class Bird:
     """
     ゲームキャラクター（こうかとん）に関するクラス
@@ -163,10 +160,10 @@ def main():
     beam = None #Beam(bird) #ビームインスタンス生成
     # bomb2 = Bomb((0, 255, 0), 10)
     bombs = [Bomb((255, 0, 0), 10) for _ in range(NUM_OF_BOMBS)]
-    beams = []
+    # beams = []
     score = Score()
     clock = pg.time.Clock()
-    tmr = 0
+    tmr = 0 
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
