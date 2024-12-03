@@ -120,7 +120,7 @@ class Beam:
         """
         if check_bound(self.rct) == (True, True):
             self.rct.move_ip(self.vx, self.vy)
-            screen.blit(self.img, self.rct)    
+            screen.blit(self.img, self.rct)         
 
 
 class Bomb:
@@ -163,6 +163,7 @@ def main():
     beam = None #Beam(bird) #ビームインスタンス生成
     # bomb2 = Bomb((0, 255, 0), 10)
     bombs = [Bomb((255, 0, 0), 10) for _ in range(NUM_OF_BOMBS)]
+    beams = []
     score = Score()
     clock = pg.time.Clock()
     tmr = 0
@@ -172,7 +173,7 @@ def main():
                 return
             if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
                 # スペースキー押下でBeamクラスのインスタンス生成
-                beam = Beam(bird)            
+                beam.append(Beam(bird))          
         screen.blit(bg_img, [0, 0])
         
         for bomb in bombs:
@@ -186,11 +187,12 @@ def main():
                 time.sleep(1)
                 return
         
-        for i, bomb in enumerate(bombs):
+        for i, bomb in enumerate(bombs): 
             if beam is not None:
                 if beam.rct.colliderect(bomb.rct): #ビームが
                     beam = None
                     bombs[i] = None
+                    beams.remove(beam)
                     score.score += 1
                     bird.change_img(6, screen)
                     pg.display.update()
@@ -201,8 +203,12 @@ def main():
         bombs = [bomb for bomb in bombs if bomb is not None]
         for bomb in bombs:
             bomb.update(screen)
-        if beam is not None:
-            beam.update(screen)
+        beams = [beam for beam in beams if check_bound(beam.rct) == (True, True)]
+        for bomb in bombs:
+            bomb.update(screen)
+        # if beam is not None:
+        #     beam.update(screen)
+
         # bomb2.update(screen)
         score.update(screen)
         pg.display.update()
