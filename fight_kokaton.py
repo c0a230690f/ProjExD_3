@@ -25,6 +25,7 @@ def check_bound(obj_rct: pg.Rect) -> tuple[bool, bool]:
     return yoko, tate
 
 
+
 class Bird:
     """
     ゲームキャラクター（こうかとん）に関するクラス
@@ -83,6 +84,18 @@ class Bird:
         if not (sum_mv[0] == 0 and sum_mv[1] == 0):
             self.img = __class__.imgs[tuple(sum_mv)]
         screen.blit(self.img, self.rct)
+
+class Score:
+    def __init__(self):
+        self.fonto = pg.font.SysFont("hgp創英角ﾎﾟｯﾌﾟ体",30)
+        self.score = 0
+        self.color = (0,0,255)
+        self.img = self.fonto.render(f"スコア：{self.score}", 0, self.color) 
+        self.center = (100, HEIGHT-50)
+
+    def update(self, screen: pg.Surface):
+        self.img = self.fonto.render(f"スコア：{self.score}", 0, self.color) 
+        screen.blit(self.img,self.center)
 
 
 class Beam:
@@ -149,7 +162,8 @@ def main():
     bomb = Bomb((255, 0, 0), 10)
     beam = None #Beam(bird) #ビームインスタンス生成
     # bomb2 = Bomb((0, 255, 0), 10)
-    bombs = [Bomb((255, 0, 0), 10) for i in range(NUM_OF_BOMBS)]
+    bombs = [Bomb((255, 0, 0), 10) for _ in range(NUM_OF_BOMBS)]
+    score = Score()
     clock = pg.time.Clock()
     tmr = 0
     while True:
@@ -177,24 +191,23 @@ def main():
                 if beam.rct.colliderect(bomb.rct): #ビームが
                     beam = None
                     bombs[i] = None
+                    score.score += 1
                     bird.change_img(6, screen)
                     pg.display.update()
 
         key_lst = pg.key.get_pressed()
         bird.update(key_lst, screen)
         # beam.update(screen)   
-        bomb.update(screen)
-        # beam.update(screen)
         bombs = [bomb for bomb in bombs if bomb is not None]
         for bomb in bombs:
             bomb.update(screen)
         if beam is not None:
             beam.update(screen)
         # bomb2.update(screen)
+        score.update(screen)
         pg.display.update()
         tmr += 1
         clock.tick(50)
-
 
 if __name__ == "__main__":
     pg.init()
